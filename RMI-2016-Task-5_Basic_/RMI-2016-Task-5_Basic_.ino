@@ -4,36 +4,41 @@
 int main()
 {
   //enable interrupts
+  Serial.begin(9600);
   sei();
   DDRB|=0xFF;
-  DDRD|=0x00;
   PORTB|=0b00000010;
   
-  //enabling external interrupt
-  //EIMSK|=(1<<INT0);
-  //falling edge interrupt
-  //EICRA|=(1<<ISC01);
+ sei();
+  //TIMSK1=(1<<OCIE1A);
   
+  EIMSK|=(1<<INT0);
+  EICRA|=(1<<ISC01);
+  
+  DDRD|=0b00000000;
   while(1)
   {
-   PORTB^=0b00000011;
-   _delay_ms(1000);
+   PORTB = 0b00000001;
+   _delay_ms(500);
+   PORTB = 0b00000010;
+   _delay_ms(500);
   }
   return 0;
 }
 
-ISR(INT0_VECT)
+ISR(INT0_vect)
 {
-  unsigned a;
-  if(PORTB == 0b00000010) a=2;
-  else a = 1;
-  
-  PORTB = 0b00000000;
-  _delay_ms(5000);
+  //unsigned a;
+  //if(PORTB == 0b00000010) a=2;
+  //else a = 1;
+  Serial.println("Hi");
   PORTB = 0b00000011;
-  _delay_ms(500);
+  _delay_ms(200);
+  PORTB = 0b00000000;
+  _delay_ms(200);
+  Serial.println("Bye");
   
-  if(a==2) PORTB = 0b00000010;
-  else PORTB = 0b00000001;
+  //if(a==2) PORTB = 0b00000010;
+  //else PORTB = 0b00000001;
 
 }
